@@ -31,19 +31,19 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test
 
-      - name: Build Debug APK
+      - name: Build Production Release APK
         run: |
           TAG="${{ github.ref_name }}"
           CLEAN_VER="${TAG#v}"
           COMMITS=$(git rev-list --count HEAD || echo "1")
-          echo "Building APK for version: ${CLEAN_VER} (code: ${COMMITS})"
-          ./gradlew assembleDebug -PappVersionName="${CLEAN_VER:-1.0.0}" -PappVersionCode="${COMMITS:-1}"
+          echo "Building Production Release APK for version: ${CLEAN_VER} (code: ${COMMITS})"
+          ./gradlew assembleRelease -PappVersionName="${CLEAN_VER:-1.0.0}" -PappVersionCode="${COMMITS:-1}"
 
       - name: Prepare Release Artifacts
         run: |
           mkdir -p release-artifacts
-          cp app/build/outputs/apk/debug/app-debug.apk release-artifacts/waqt-${{ github.ref_name || 'latest' }}.apk
-          cp app/build/outputs/apk/debug/app-debug.apk release-artifacts/waqt-latest.apk
+          cp app/build/outputs/apk/release/app-release.apk release-artifacts/waqt-${{ github.ref_name || 'latest' }}.apk
+          cp app/build/outputs/apk/release/app-release.apk release-artifacts/waqt-latest.apk
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
