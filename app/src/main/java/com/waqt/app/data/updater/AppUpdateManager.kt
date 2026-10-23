@@ -31,105 +31,91 @@ data class AppUpdateInfo(
 
 class AppUpdateManager(
     private val repoOwner: String = "JasimIhsan",
-    private val candidateRepos: List<String> = listOf("Waqt-Azan-time", "Waqt", "Adhan", "waqt")
+    private val repoName: String = "Waqt-Azan-time"
 ) {
 
     suspend fun checkForUpdates(
         currentVersion: String = BuildConfig.VERSION_NAME
     ): Result<AppUpdateInfo> = withContext(Dispatchers.IO) {
-        var lastException: Exception? = null
+        try {
+            val endpoint = "https://api.github.com/repos/$repoOwner/$repoName/releases/latest"
+            val url = URL(endpoint)
+            val connection = (url.openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = 8000
+                readTimeout = 8000
+                setRequestProperty("Accept", "application/vnd.github.v3+json")
+                setRequestProperty("User-Agent", "Waqt-App/$currentVersion")
+            }
 
-        for (repoName in candidateRepos) {
-            try {
-                val endpoint = "https://api.github.com/repos/$repoOwner/$repoName/releases/latest"
-                val url = URL(endpoint)
-                val connection = (url.openConnection() as HttpURLConnection).apply {
-                    requestMethod = "GET"
-                    connectTimeout = 8000
-                    readTimeout = 8000
-                    setRequestProperty("Accept", "application/vnd.github.v3+json")
-                    setRequestProperty("User-Agent", "Waqt-App/$currentVersion")
-                }
+            val responseCode = connection.responseCode
 
-                val responseCode = connection.responseCode
+            if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                return@withContext Result.success(
+                    AppUpdateInfo(
+                        isUpdateAvailable = false,
+                        currentVersion = currentVersion,
+                        latestVersion = currentVersion,
+                        releaseTitle = "No Releases",
+                        releaseNotes = "No public releases found on GitHub ($repoOwner/$repoName).",
+                        downloadUrl = null,
+                        apkFileName = null,
+                        releasePageUrl = "https://github.com/$repoOwner/$repoName/releases"
+                    )
+                )
+            }
 
-                if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                    // Try next candidate repository
-                    continue
-                }
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() } ?: ""
+                return@withContext Result.failure(Exception("GitHub API error ($responseCode): $errorStream"))
+            }
 
-                if (responseCode != HttpURLConnection.HTTP_OK) {
-                    val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() } ?: ""
-                    lastException = Exception("GitHub API error ($responseCode): $errorStream")
-                    continue
-                }
+            val responseBody = connection.inputStream.bufferedReader().use { it.readText() }
+            val json = JSONObject(responseBody)
 
-                val responseBody = connection.inputStream.bufferedReader().use { it.readText() }
-                val json = JSONObject(responseBody)
+            val tagName = json.optString("tag_name", "").trim()
+            val releaseTitle = json.optString("name", tagName)
+            val releaseNotes = json.optString("body", "No release notes provided.")
+            val htmlUrl = json.optString("html_url", "https://github.com/$repoOwner/$repoName/releases")
+            val publishedAt = json.optString("published_at").takeIf { it.isNotBlank() }
 
-                val tagName = json.optString("tag_name", "").trim()
-                val releaseTitle = json.optString("name", tagName)
-                val releaseNotes = json.optString("body", "No release notes provided.")
-                val htmlUrl = json.optString("html_url", "https://github.com/$repoOwner/$repoName/releases")
-                val publishedAt = json.optString("published_at").takeIf { it.isNotBlank() }
+            // Parse assets to find APK download URL
+            var apkDownloadUrl: String? = null
+            var apkFileName: String? = null
 
-                // Parse assets to find APK download URL
-                var apkDownloadUrl: String? = null
-                var apkFileName: String? = null
-
-                val assetsArray = json.optJSONArray("assets")
-                if (assetsArray != null) {
-                    for (i in 0 until assetsArray.length()) {
-                        val asset = assetsArray.getJSONObject(i)
-                        val name = asset.optString("name", "")
-                        if (name.endsWith(".apk", ignoreCase = true)) {
-                            apkDownloadUrl = asset.optString("browser_download_url").takeIf { it.isNotBlank() }
-                            apkFileName = name
-                            // Prioritize release or waqt apks if multiple
-                            if (name.contains("release", ignoreCase = true) || name.contains("waqt", ignoreCase = true) || name.contains("adhan", ignoreCase = true)) {
-                                break
-                            }
+            val assetsArray = json.optJSONArray("assets")
+            if (assetsArray != null) {
+                for (i in 0 until assetsArray.length()) {
+                    val asset = assetsArray.getJSONObject(i)
+                    val name = asset.optString("name", "")
+                    if (name.endsWith(".apk", ignoreCase = true)) {
+                        apkDownloadUrl = asset.optString("browser_download_url").takeIf { it.isNotBlank() }
+                        apkFileName = name
+                        if (name.contains("release", ignoreCase = true) || name.contains("waqt", ignoreCase = true)) {
+                            break
                         }
                     }
                 }
-
-                val isNewer = isNewerVersion(currentVersion, tagName)
-
-                return@withContext Result.success(
-                    AppUpdateInfo(
-                        isUpdateAvailable = isNewer,
-                        currentVersion = currentVersion,
-                        latestVersion = tagName.removePrefix("v").removePrefix("V"),
-                        releaseTitle = releaseTitle,
-                        releaseNotes = releaseNotes,
-                        downloadUrl = apkDownloadUrl,
-                        apkFileName = apkFileName,
-                        releasePageUrl = htmlUrl,
-                        publishedAt = publishedAt
-                    )
-                )
-            } catch (e: Exception) {
-                lastException = e
             }
-        }
 
-        if (lastException != null) {
-            return@withContext Result.failure(lastException)
-        }
+            val isNewer = isNewerVersion(currentVersion, tagName)
 
-        // None of the candidate repositories had a public release yet
-        Result.success(
-            AppUpdateInfo(
-                isUpdateAvailable = false,
-                currentVersion = currentVersion,
-                latestVersion = currentVersion,
-                releaseTitle = "No Releases",
-                releaseNotes = "No public releases found on GitHub ($repoOwner/Waqt-Azan-time).",
-                downloadUrl = null,
-                apkFileName = null,
-                releasePageUrl = "https://github.com/$repoOwner/Waqt-Azan-time/releases"
+            Result.success(
+                AppUpdateInfo(
+                    isUpdateAvailable = isNewer,
+                    currentVersion = currentVersion,
+                    latestVersion = tagName.removePrefix("v").removePrefix("V"),
+                    releaseTitle = releaseTitle,
+                    releaseNotes = releaseNotes,
+                    downloadUrl = apkDownloadUrl,
+                    apkFileName = apkFileName,
+                    releasePageUrl = htmlUrl,
+                    publishedAt = publishedAt
+                )
             )
-        )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun downloadApk(

@@ -335,27 +335,6 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun simulateUpdateForTesting() {
-        val testUpdate = AppUpdateInfo(
-            isUpdateAvailable = true,
-            currentVersion = BuildConfig.VERSION_NAME,
-            latestVersion = "1.0.1",
-            releaseTitle = "Waqt v1.0.1 Update",
-            releaseNotes = "• Built-in Firebase Analytics & performance monitoring\n• Fixed in-app update installer and permissions\n• Unified app signing certificate for seamless updates\n• 10 Custom minimalist ambient prayer tones",
-            downloadUrl = "https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest/download/waqt-latest.apk",
-            apkFileName = "waqt-latest.apk",
-            releasePageUrl = "https://github.com/JasimIhsan/Waqt-Azan-time/releases",
-            publishedAt = "Just now"
-        )
-        _uiState.update {
-            it.copy(
-                availableUpdate = testUpdate,
-                showUpdateDialog = true,
-                updateStatusMessage = "Update available: v1.0.1"
-            )
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
         notificationHelper.stopPreview()
