@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Waqt</string>
+    <string name="widget_name">Waqt</string>
+    <string name="widget_description">Displays the upcoming prayer time with automatic updates.</string>
+    <string name="default_locality">Locating…</string>
+    <string name="next_azan_header">WAQT</string>
+</resources>

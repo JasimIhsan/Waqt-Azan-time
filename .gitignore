@@ -1,0 +1,27 @@
+*.iml
+.gradle/
+.kotlin/
+local.properties
+/local.properties
+.idea/
+.DS_Store
+/build/
+build/
+app/build/
+/captures
+.externalNativeBuild
+.cxx
+*.apk
+
+# Root temporary screenshots
+about_*.png
+settings_*.png
+theme_*.png
+screen_*.png
+popup_*.png
+fresh_*.png
+scratch_*.png
+first_time_*.png
+app_dashboard_*.png
+app_foreground.png
+gggg.png
