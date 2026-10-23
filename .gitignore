@@ -25,3 +25,6 @@ first_time_*.png
 app_dashboard_*.png
 app_foreground.png
 gggg.png
+
+# Firebase Secrets
+app/google-services.json
