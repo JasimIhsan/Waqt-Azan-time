@@ -9,8 +9,8 @@ android {
     namespace = "com.waqt.app"
     compileSdk = 35
 
-    val propVersionCode = project.findProperty("appVersionCode")?.toString()?.toIntOrNull() ?: 3
-    val propVersionName = project.findProperty("appVersionName")?.toString()?.removePrefix("v") ?: "1.0.2"
+    val propVersionCode = project.findProperty("appVersionCode")?.toString()?.toIntOrNull() ?: 4
+    val propVersionName = project.findProperty("appVersionName")?.toString()?.removePrefix("v") ?: "1.0.3"
 
     defaultConfig {
         applicationId = "com.waqt.app"

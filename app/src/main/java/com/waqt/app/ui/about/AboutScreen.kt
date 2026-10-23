@@ -68,8 +68,7 @@ import com.waqt.app.ui.theme.WaqtSage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(
-    onNavigateBack: () -> Unit,
-    onCheckForUpdates: () -> Unit = {}
+    onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -172,35 +171,13 @@ fun AboutScreen(
                                 )
                             )
 
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Text(
-                                    text = "Version ${com.waqt.app.BuildConfig.VERSION_NAME}",
-                                    style = MaterialTheme.typography.bodySmall.copy(
-                                        color = Sky400,
-                                        fontWeight = FontWeight.Medium
-                                    )
+                            Text(
+                                text = "Version ${com.waqt.app.BuildConfig.VERSION_NAME}",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    color = Sky400,
+                                    fontWeight = FontWeight.Medium
                                 )
-                                Text(
-                                    text = "•",
-                                    color = Slate400,
-                                    fontSize = 11.sp
-                                )
-                                Text(
-                                    text = "Check Updates",
-                                    style = MaterialTheme.typography.labelSmall.copy(
-                                        color = WaqtTeal,
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(6.dp))
-                                        .background(WaqtTeal.copy(alpha = 0.15f))
-                                        .clickable { onCheckForUpdates() }
-                                        .padding(horizontal = 8.dp, vertical = 3.dp)
-                                )
-                            }
+                            )
 
                             Spacer(modifier = Modifier.height(10.dp))
 

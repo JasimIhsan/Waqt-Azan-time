@@ -77,8 +77,7 @@ class MainActivity : ComponentActivity() {
                         onNavigateBack = { currentScreen = AppScreen.SETTINGS }
                     )
                     AppScreen.ABOUT -> AboutScreen(
-                        onNavigateBack = { currentScreen = AppScreen.DASHBOARD },
-                        onCheckForUpdates = { viewModel.showUpdateDialog() }
+                        onNavigateBack = { currentScreen = AppScreen.DASHBOARD }
                     )
                 }
             }

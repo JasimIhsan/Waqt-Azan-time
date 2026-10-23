@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
@@ -154,36 +153,9 @@ fun NotificationSettingsScreen(
                 }
             }
 
-            // ==========================================
-            // 2. SEND TEST NOTIFICATION BUTTON
-            // ==========================================
             if (uiState.notificationsEnabled) {
-                item {
-                    Button(
-                        onClick = { viewModel.sendTestNotification() },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Sky400,
-                            contentColor = Midnight900
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.NotificationsActive,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Send Test Notification",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-
                 // ==========================================
-                // 3. NOTIFICATION TIMINGS
+                // 2. NOTIFICATION TIMINGS
                 // ==========================================
                 item {
                     Text(
@@ -263,7 +235,7 @@ fun NotificationSettingsScreen(
                 }
 
                 // ==========================================
-                // 4. 10 MINIMAL NOTIFICATION SOUNDS
+                // 3. 10 MINIMAL NOTIFICATION SOUNDS
                 // ==========================================
                 item {
                     Text(
