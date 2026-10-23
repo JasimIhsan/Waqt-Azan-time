@@ -263,7 +263,13 @@ fun SettingsScreen(
                                 )
                             } else {
                                 Button(
-                                    onClick = { viewModel.checkForUpdates(silent = false) },
+                                    onClick = {
+                                        if (uiState.availableUpdate?.isUpdateAvailable == true) {
+                                            viewModel.showUpdateDialog()
+                                        } else {
+                                            viewModel.checkForUpdates(silent = false)
+                                        }
+                                    },
                                     colors = ButtonDefaults.buttonColors(containerColor = WaqtTeal),
                                     shape = RoundedCornerShape(10.dp)
                                 ) {

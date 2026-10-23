@@ -169,6 +169,11 @@ class AppUpdateManager(
                 }
             }
 
+            destinationFile.parentFile?.mkdirs()
+            if (destinationFile.exists()) {
+                destinationFile.delete()
+            }
+
             val fileLength = connection.contentLength
             val input: InputStream = connection.inputStream
             val output = FileOutputStream(destinationFile)
@@ -176,13 +181,12 @@ class AppUpdateManager(
             val data = ByteArray(8192)
             var total: Long = 0
             var count: Int
+            val estimatedBytes = if (fileLength > 0) fileLength else 21 * 1024 * 1024
 
             while (input.read(data).also { count = it } != -1) {
                 total += count
-                if (fileLength > 0) {
-                    val progress = ((total * 100) / fileLength).toInt()
-                    onProgress(progress.coerceIn(0, 100))
-                }
+                val progress = ((total * 100) / estimatedBytes).toInt()
+                onProgress(progress.coerceIn(1, 99))
                 output.write(data, 0, count)
             }
 
@@ -190,9 +194,11 @@ class AppUpdateManager(
             output.close()
             input.close()
             connection.disconnect()
+            onProgress(100)
 
             Result.success(destinationFile)
         } catch (e: Exception) {
+            destinationFile.delete()
             Result.failure(e)
         }
     }
@@ -225,8 +231,20 @@ class AppUpdateManager(
         )
         val intent = Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(apkUri, "application/vnd.android.package-archive")
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
+
+        // Grant explicit URI read permission to all matching package installer handlers
+        val resolveInfoList = context.packageManager.queryIntentActivities(
+            intent,
+            android.content.pm.PackageManager.MATCH_DEFAULT_ONLY
+        )
+        for (resolveInfo in resolveInfoList) {
+            val packageName = resolveInfo.activityInfo.packageName
+            context.grantUriPermission(packageName, apkUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
         context.startActivity(intent)
     }
 

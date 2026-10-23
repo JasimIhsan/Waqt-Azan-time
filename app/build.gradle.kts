@@ -9,12 +9,15 @@ android {
     namespace = "com.waqt.app"
     compileSdk = 35
 
+    val propVersionCode = project.findProperty("appVersionCode")?.toString()?.toIntOrNull() ?: 2
+    val propVersionName = project.findProperty("appVersionName")?.toString()?.removePrefix("v") ?: "1.0.1"
+
     defaultConfig {
         applicationId = "com.waqt.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = propVersionCode
+        versionName = propVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -22,9 +25,22 @@ android {
         }
     }
 
+    signingConfigs {
+        create("sharedKeystore") {
+            storeFile = file("keystore/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("sharedKeystore")
+        }
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("sharedKeystore")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest">📦 <b>Release Notes (v1.0.0)</b></a>
+  <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest">📦 <b>Release Notes (v1.0.1)</b></a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
   <a href="#-quick-install-guide">📲 <b>Install Guide</b></a>
   &nbsp;&nbsp;•&nbsp;&nbsp;

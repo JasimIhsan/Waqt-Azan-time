@@ -32,7 +32,12 @@ jobs:
         run: ./gradlew test
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: |
+          TAG="${{ github.ref_name }}"
+          CLEAN_VER="${TAG#v}"
+          COMMITS=$(git rev-list --count HEAD || echo "1")
+          echo "Building APK for version: ${CLEAN_VER} (code: ${COMMITS})"
+          ./gradlew assembleDebug -PappVersionName="${CLEAN_VER:-1.0.0}" -PappVersionCode="${COMMITS:-1}"
 
       - name: Prepare Release Artifacts
         run: |
