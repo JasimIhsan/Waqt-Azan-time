@@ -9,6 +9,16 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest/download/waqt-latest.apk">
+    <img src="https://img.shields.io/badge/⚡_Download_APK-Latest_Release-2DD4BF?style=for-the-badge&logo=android&logoColor=0B0F19" alt="Download Latest APK" height="44" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest">
+    <img src="https://img.shields.io/badge/📦_Release_Notes-v1.0.0-1E293B?style=for-the-badge&logo=github&logoColor=white" alt="Release Notes" height="44" />
+  </a>
+</p>
+
+<p align="center">
   <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases"><img src="https://img.shields.io/github/v/release/JasimIhsan/Waqt-Azan-time?style=for-the-badge&color=2DD4BF" alt="Latest Release" /></a>
   <img src="https://img.shields.io/badge/Platform-Android_8.0+-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Platform" />
   <img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
