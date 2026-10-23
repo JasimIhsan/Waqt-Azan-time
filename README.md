@@ -10,12 +10,16 @@
 
 <p align="center">
   <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest/download/waqt-latest.apk">
-    <img src="https://img.shields.io/badge/⚡_Download_APK-Latest_Release-2DD4BF?style=for-the-badge&logo=android&logoColor=0B0F19" alt="Download Latest APK" height="44" />
+    <img src="assets/download-button.png" width="360" alt="Download Latest APK for Android" />
   </a>
-  &nbsp;&nbsp;
-  <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest">
-    <img src="https://img.shields.io/badge/📦_Release_Notes-v1.0.0-1E293B?style=for-the-badge&logo=github&logoColor=white" alt="Release Notes" height="44" />
-  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest">📦 <b>Release Notes (v1.0.0)</b></a>
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  <a href="#-quick-install-guide">📲 <b>Install Guide</b></a>
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  <a href="https://github.com/JasimIhsan/Waqt-Azan-time/releases">🏷️ <b>All Versions</b></a>
 </p>
 
 <p align="center">
@@ -25,6 +29,12 @@
   <img src="https://img.shields.io/badge/UI-Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white" alt="Compose" />
   <img src="https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge" alt="License" />
 </p>
+
+> [!TIP]
+> ### 📲 Quick Install Guide
+> 1. Tap **[Download Latest APK](https://github.com/JasimIhsan/Waqt-Azan-time/releases/latest/download/waqt-latest.apk)** on your Android device (or scan/transfer).
+> 2. Open the downloaded `waqt-latest.apk` from browser downloads or your File Manager.
+> 3. Tap **Install** *(if prompted, toggle "Allow from this source")*.
 
 ---
 
