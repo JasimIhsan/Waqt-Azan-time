@@ -17,6 +17,8 @@ import com.waqt.app.ui.dashboard.DashboardScreen
 import com.waqt.app.ui.dashboard.DashboardViewModel
 import com.waqt.app.ui.settings.NotificationSettingsScreen
 import com.waqt.app.ui.settings.SettingsScreen
+import androidx.compose.runtime.LaunchedEffect
+import com.waqt.app.data.analytics.AnalyticsHelper
 import com.waqt.app.ui.theme.AzanTheme
 import com.waqt.app.ui.updater.UpdateDialog
 
@@ -30,6 +32,7 @@ enum class AppScreen {
 class MainActivity : ComponentActivity() {
 
     private val viewModel: DashboardViewModel by viewModels()
+    private val analyticsHelper by lazy { AnalyticsHelper(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,10 @@ class MainActivity : ComponentActivity() {
             AzanTheme {
                 val uiState by viewModel.uiState.collectAsState()
                 var currentScreen by rememberSaveable { mutableStateOf(AppScreen.DASHBOARD) }
+
+                LaunchedEffect(currentScreen) {
+                    analyticsHelper.logScreenView(currentScreen.name.lowercase())
+                }
 
                 BackHandler(enabled = currentScreen != AppScreen.DASHBOARD) {
                     currentScreen = when (currentScreen) {

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
+import com.waqt.app.data.analytics.AnalyticsHelper
 import com.waqt.app.data.calculator.PrayerCalculator
 import com.waqt.app.data.location.LocationHelper
 import com.waqt.app.data.notification.NotificationHelper
@@ -58,6 +59,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     private val locationHelper = LocationHelper(application)
     private val notificationHelper = NotificationHelper(application)
     private val updateManager = AppUpdateManager()
+    private val analyticsHelper = AnalyticsHelper(application)
     private var calculator = PrayerCalculator()
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -202,6 +204,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun updateCalculationMethod(method: CalculationMethod) {
+        analyticsHelper.logCalculationMethodChanged(method.name)
         viewModelScope.launch {
             val currentMadhab = _uiState.value.madhab
             repository.saveCalculationSettings(method, currentMadhab)
@@ -210,6 +213,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun updateMadhab(madhab: Madhab) {
+        analyticsHelper.logMadhabChanged(madhab.name)
         viewModelScope.launch {
             val currentMethod = _uiState.value.calculationMethod
             repository.saveCalculationSettings(currentMethod, madhab)
@@ -222,6 +226,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     // ==========================================
 
     fun setNotificationsEnabled(enabled: Boolean) {
+        analyticsHelper.logNotificationToggled("master", enabled)
         viewModelScope.launch {
             repository.setNotificationsEnabled(enabled)
             WidgetSyncManager.syncAndSchedule(getApplication())
@@ -229,6 +234,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun selectNotificationSound(soundId: String) {
+        analyticsHelper.logToneSelected("all", soundId)
         viewModelScope.launch {
             repository.setSelectedSoundId(soundId)
             WidgetSyncManager.syncAndSchedule(getApplication())
@@ -291,6 +297,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
             val result = updateManager.checkForUpdates()
             result.fold(
                 onSuccess = { info ->
+                    analyticsHelper.logUpdateCheck(info.isUpdateAvailable, info.latestVersion)
                     _uiState.update { current ->
                         current.copy(
                             isCheckingForUpdates = false,
